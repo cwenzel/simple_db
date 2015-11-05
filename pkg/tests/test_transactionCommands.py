@@ -35,7 +35,7 @@ class TransactionCommandsTest(unittest.TestCase):
     transactionCommands.rollback(fso, None)
     self.assertEqual(fso.dictionaryStack[len(fso.dictionaryStack)-1]['a'], 1)
 
-  def test_commit(self):
+  def test_commit1(self):
     fso = fakeStateObject.FakeStateObject()
     fso.dictionaryStack = [{}]
 
@@ -54,6 +54,14 @@ class TransactionCommandsTest(unittest.TestCase):
     self.assertEqual(fso.dictionaryStack[0]['a'], 3)
     self.assertEqual(fso.dictionaryStack[0]['b'], 9)
     self.assertEqual(fso.dictionaryStack[0]['d'], 10)
+
+  def test_commit2(self):
+    fso = fakeStateObject.FakeStateObject()
+    fso.unsetVariables = ['d']
+    fso.dictionaryStack = [{'a':1, 'd': 10}, {'a':2, 'b':9}, {'a':3}]
+    transactionCommands.commit(fso, None)
+    self.assertEqual(len(fso.unsetVariables), 0)
+    self.assertEqual(fso.dictionaryStack[0].get('d'), None)
 
 if __name__ == '__main__':
   unittest.main()
